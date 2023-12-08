@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KriteriaController;
+use App\Http\Controllers\AlternatifController;
+use App\Http\Controllers\Auth\LoginController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,7 +16,9 @@ use App\Http\Controllers\KriteriaController;
 */
 
 Route::get('/', function () {
-    return view('layouts.app');
+    return view('auth.login');
 });
+Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('login', [LoginController::class, 'login']);
 Route::resource('kriteria', KriteriaController::class);
 Route::resource('alternatif', AlternatifController::class);

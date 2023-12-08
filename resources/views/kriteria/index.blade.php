@@ -34,13 +34,15 @@
                             <td class="whitespace-nowrap px-6 py-4">{{ $kri->bobot }}</td>
                             <td class="whitespace-nowrap px-6 py-4">C{{ $index+1}}</td>
                             <td class="whitespace-nowrap px-6 py-4">
-                                <form action="{{route('kriteria.destroy', $kri->id)}}" method="POST">
-                                <a href="{{route('kriteria.edit', $kri->id)}}" class="btn btn-edit border-blue-500 hover:bg-blue-600">Edit
-                                </a>
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-edit border-red-500 hover:bg-red-600">Hapus
-                                </button>
+                                <form action="{{ route('kriteria.destroy', $kri->id) }}" method="POST">
+                                    <a href="{{ route('kriteria.edit', $kri->id) }}" class="btn btn-edit px-6 py-2.5 border border-blue-500 hover:bg-blue-300">
+                                        Edit
+                                    </a>
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-delete px-6 py-2.5 border border-red-600 hover:bg-red-300 ml-6">
+                                        Hapus
+                                    </button>
                                 </form>
                             </td>
                           </tr>

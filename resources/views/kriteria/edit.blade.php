@@ -1,36 +1,33 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="flex flex-wrap mx-2.5 md:mx-5 gap-5">
-    <article class="article mt-4">
-        <div class="p-10 md:p-5 flex justify-between items-center bg-[#eee]">
-            <h2 class="text-[20px] font-bold">Edit Kriteria</h2>
+    <div class="w-full p-6 mx-auto">
+        <div class="flex items-center justify-center">
+                <h2 class="mb-0 text-lg font-semibold text-gray-700">Edit Kriteria</h2>
+            </div>
         </div>
-            <div class="flex flex-col p-5">
-                <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                  <div class="inline-block min-w-full sm:px-6 lg:px-8">
-                    <div class="overflow-hidden">
-                            <form action="{{ route('kriteria.update', ['kriterium' => $kriteria->id]) }}" method="POST" enctype="multipart/form-data" class="bg-white rounded px-8 flex flex-col h-full">
-                                @method('PUT')
-                                @csrf
-                                    <label for="name_kriteria" class="form-label block capitalize tracking-wide text-gray-700 text-xs font-bold mb-2">Nama Kriteria</label>
-                                    <input type="text" name="name_kriteria" id="name_kriteria" class="peer h-10 rounded-md border-blue-gray-200 -t-transparent font-sans text-sm font-normal w-full bg-gray-200 text-gray-700 border  py-3 px-4 mb-3 focus:ring-gray-200 focus:bg-white" placeholder="" aria-describedby="name_kriteria" value="{{$kriteria->name_kriteria}}">
-
-                                    <label for="attribute" class="form-label block capitalize tracking-wide text-gray-700 text-xs font-bold mb-2">Atribut Kriteria</label>
-                                    <select name="attribute" id="attribute" class="peer h-10 rounded-md border-blue-gray-200 -t-transparent font-sans text-sm font-normal w-full bg-gray-200 text-gray-700 border px-4 mb-3 focus:ring-gray-200 focus:bg-white" aria-label="Default select example text-xs" value="{{$kriteria->attribute}}">
-                                        <option value="benefit" selected>Benefit</option>
-                                        <option value="cost">Cost</option>
-                                    </select>
-
-                                    <label for="bobot" class="form-label block capitalize tracking-wide text-gray-700 text-xs font-bold mb-2">Bobot Kriteria</label>
-                                    <input type="text" name="bobot" id="bobot" class="peer h-10 rounded-md border-blue-gray-200 -t-transparent font-sans text-sm font-normal w-full bg-gray-200 text-gray-700 border  py-3 px-4 mb-3 focus:ring-gray-200 focus:bg-white" aria-label="Default select example" placeholder="" aria-describedby="bobot" value="{{$kriteria->bobot}}">
-
-                                    <button type="submit" class="btn btn-primary  block capitalize tracking-wide text-gray-700 text-xs font-bold mb-2 mt-2 p-2">Simpan</button>
-                            </form>
+            <form action="{{ route('kriteria.update', ['kriterium' => $kriteria->id]) }}" method="POST" enctype="multipart/form-data" class="max-w-full md:w-8/12 mx-auto">
+                @method('PUT')
+                @csrf
+                <div class="mb-4">
+                    <label for="name_kriteria" class="block text-gray-700 text-sm font-semibold mb-2">Nama Kriteria</label>
+                    <input type="text" name="name_kriteria" id="name_kriteria" class="form-input w-full py-2 px-3 border rounded-md shadow-sm" value="{{ $kriteria->name_kriteria }}" required>
                 </div>
-              </div>
+                <div class="mb-4">
+                    <label for="attribute" class="block text-gray-700 text-sm font-semibold mb-2">Atribut Kriteria</label>
+                    <select name="attribute" id="attribute" class="form-select w-full py-2 px-3 border rounded-md shadow-sm" required>
+                        <option value="benefit" {{ $kriteria->attribute === 'benefit' ? 'selected' : '' }}>Benefit</option>
+                        <option value="cost" {{ $kriteria->attribute === 'cost' ? 'selected' : '' }}>Cost</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="bobot" class="block text-gray-700 text-sm font-semibold mb-2">Bobot Kriteria</label>
+                    <input type="text" name="bobot" id="bobot" class="form-input w-full py-2 px-3 border rounded-md shadow-sm" value="{{ $kriteria->bobot }}" required>
+                </div>
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md transition duration-300 hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800">
+                    Simpan
+                </button>
+            </form>
         </div>
-    </article>
-</div>
 
 @endsection
