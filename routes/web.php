@@ -6,6 +6,7 @@ use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\SubKriteriaController;
 use App\Http\Controllers\RangeNilaiController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\PenilaianController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -27,3 +28,4 @@ Route::resource('kriteria', KriteriaController::class);
 Route::resource('subkriteria', SubKriteriaController::class);
 Route::get('/subkriteria/create', [SubKriteriaController::class, 'create'])->name('subkriteria.create');
 Route::resource('rangenilai', RangeNilaiController::class);
+Route::resource('penilaian', PenilaianController::class);
