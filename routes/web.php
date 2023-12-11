@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\AlternatifController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\PenilaianController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,3 +23,4 @@ Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
 Route::resource('kriteria', KriteriaController::class);
 Route::resource('alternatif', AlternatifController::class);
+Route::resource('penilaian', PenilaianController::class);
