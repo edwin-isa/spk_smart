@@ -1,10 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AlternatifController;
 use App\Http\Controllers\KriteriaController;
-use App\Http\Controllers\SubKriteriaController;
-use App\Http\Controllers\RangeNilaiController;
+use App\Http\Controllers\AlternatifController;
 use App\Http\Controllers\Auth\LoginController;
 /*
 |--------------------------------------------------------------------------
@@ -22,8 +20,5 @@ Route::get('/', function () {
 });
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
-Route::resource('alternatif', AlternatifController::class);
 Route::resource('kriteria', KriteriaController::class);
-Route::resource('subkriteria', SubKriteriaController::class);
-Route::get('/subkriteria/create', [SubKriteriaController::class, 'create'])->name('subkriteria.create');
-Route::resource('rangenilai', RangeNilaiController::class);
+Route::resource('alternatif', AlternatifController::class);
