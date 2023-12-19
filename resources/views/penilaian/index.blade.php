@@ -5,7 +5,7 @@
             <div class="relative min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
                 {{-- <div class="flex-auto px-0 pt-0 pb-2"> --}}
                     <!-- Content goes here -->
-                    <div class="table-container" style="max-width: 80%;">
+                    <div class="table-container" style="max-width: 97%; overflow-x: auto;" >
                         <table class="w-full text-left text-sm font-light">
                             <thead class="border-b font-medium dark:border-neutral-500">
                                 <tr>
@@ -106,6 +106,7 @@
     <style>
         .modal-max-width {
             max-width: 78vw; /* Adjust the percentage as needed */
+            overflow-x: auto;
         }
 
         .modal-max-height {

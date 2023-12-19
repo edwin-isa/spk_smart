@@ -25,7 +25,7 @@ class PenilaianController extends Controller
     public function store(PenilaianRequest $request){
         $request->validate([
             'id_alternatif' => 'required|exists:alternatif,id',
-            'nilai.*' => 'required|numeric|min:0|between:0,99.9',
+            'nilai.*' => 'required|numeric|min:0|between:0,10000000',
         ]);
 
         $idAlt = $request->input('id_alternatif');
