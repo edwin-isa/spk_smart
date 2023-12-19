@@ -32,6 +32,10 @@
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <!-- Main Styling -->
     <link href="{{ asset('assets/css/argon-dashboard-tailwind.css?v=1.0.1') }}" rel="stylesheet" />
+    <!-- Include SweetAlert CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
   </head>
 
   <body class="m-0 font-sans text-base antialiased font-normal dark:bg-slate-900 leading-default bg-gray-50 text-slate-500">
@@ -77,18 +81,17 @@
 
       <!-- end cards -->
       <div class="w-full px-6 py-6 mx-auto">
-          <!-- table 1 -->
-          <div class="flex flex-wrap -mx-3">
-              <div class="flex-none w-full max-w-full px-3">
-                  <div class="relative min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
-                        {{-- <div class="flex-auto px-0 pt-0 pb-2"> --}}
-                            <!-- Content goes here -->
-                            @yield('content')
-                        {{-- </div> --}}
-                    </div>
+        <!-- table 1 -->
+        <div class="flex flex-wrap -mx-3">
+            <div class="flex-none w-full px-3">
+                <div class="relative min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
+                    <!-- Content goes here -->
+                    @yield('content')
                 </div>
             </div>
         </div>
+    </div>
+
     </main>
 
 

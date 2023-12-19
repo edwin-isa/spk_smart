@@ -14,7 +14,7 @@ class Kriteria extends Model
         'attribute',
         'bobot',
     ] ;
-    
+
     public function subkriteria()
     {
         return $this->hasMany(SubKriteria::class, 'kriteria_id');

@@ -6,7 +6,8 @@ use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\SubKriteriaController;
 use App\Http\Controllers\RangeNilaiController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\PenilaianController;
+use App\Http\Controllers\PenilaianController;
+use App\Http\Controllers\PerhitunganController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,6 +27,6 @@ Route::post('login', [LoginController::class, 'login']);
 Route::resource('alternatif', AlternatifController::class);
 Route::resource('kriteria', KriteriaController::class);
 Route::resource('subkriteria', SubKriteriaController::class);
-Route::get('/subkriteria/create', [SubKriteriaController::class, 'create'])->name('subkriteria.create');
-Route::resource('rangenilai', RangeNilaiController::class);
 Route::resource('penilaian', PenilaianController::class);
+Route::get('/perhitungan', [PerhitunganController::class, 'index'])->name('perhitungan.index');
+

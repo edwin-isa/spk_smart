@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('penilaian', function (Blueprint $table) {
+        Schema::create('perhitungan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_alternatif');
-            $table->foreignId('id_kriteria');
-            $table->decimal('value');
             $table->timestamps();
         });
-
     }
 
     /**
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('penilaian');
+        Schema::dropIfExists('perhitungan');
     }
 };
