@@ -18,11 +18,20 @@ class LoginController extends Controller
 
     public function redirectTo()
     {
-        return route('kriteria.index');
+        return route('dashboard.index');
     }
 
     public function username()
     {
         return 'email';
+    }
+
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        return redirect('/');
     }
 }
