@@ -71,17 +71,21 @@ class PerhitunganController extends Controller
 
             // Simpan nilai akhir ke dalam array untuk digunakan selanjutnya
             $nilaiUtilitasArray[$a->id]['akhir'] = number_format($nilai_akhir, 2);
-
         }
-        // Proses perhitungan ranking
-        $sortedAlternatif = $nilaiUtilitasArray;
-        arsort($sortedAlternatif); // Urutkan berdasarkan nilai akhir dari yang tertinggi
+       // Calculate total final values for each alternative
+        foreach ($alternatif as $a) {
+            $totalFinalValue = array_sum($nilaiUtilitasArray[$a->id]);
+            $nilaiUtilitasArray[$a->id]['total_final_value'] = number_format($totalFinalValue, 2);
+        }
+
+        // Proses perhitungan ranking berdasarkan total_final_value
+        $sortedAlternatif = collect($nilaiUtilitasArray)->sortByDesc('total_final_value')->toArray();
 
         $ranking = 1;
         $prevScore = null;
 
         foreach ($sortedAlternatif as $alternatifId => $scoreData) {
-            $currentScore = $scoreData['akhir'];
+            $currentScore = $scoreData['total_final_value'];
 
             if ($prevScore !== null && $currentScore != $prevScore) {
                 $ranking++;
@@ -90,6 +94,7 @@ class PerhitunganController extends Controller
             $nilaiUtilitasArray[$alternatifId]['ranking'] = $ranking;
             $prevScore = $currentScore;
         }
+
 
         return view('perhitungan.index', compact('penilaian', 'alternatif', 'kriteria', 'nilaiUtilitasArray', 'jumlahBobot', 'Cmax', 'Cmin'));
     }
