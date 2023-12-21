@@ -1,11 +1,6 @@
 @extends('layouts.app')
 @section('content')
 
-<!-- Start Header -->
-<div class="p-1 bg-white flex justify-between items-center">
-    <h1 class="mt-4 mb-4 ml-4 font-bold text-[20px] md:text-[25px] relative">Data Penilaian</h1>
-</div>
-<!-- End Header -->
 <!-- Start content -->
 <div class="flex flex-wrap mx-2.5 md:mx-5 gap-5">
     <article class="article mt-4">
