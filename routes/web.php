@@ -9,6 +9,7 @@ use App\Http\Controllers\RangeNilaiController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\PerhitunganController;
+use App\Http\Controllers\RekomendasiController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,3 +33,4 @@ Route::resource('subkriteria', SubKriteriaController::class);
 Route::resource('penilaian', PenilaianController::class);
 Route::get('/perhitungan', [PerhitunganController::class, 'index'])->name('perhitungan.index');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/rekomendasi', [RekomendasiController::class, 'index'])->name('rekomendasi.index');
