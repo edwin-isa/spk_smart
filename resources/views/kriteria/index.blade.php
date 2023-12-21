@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <article class="article mt-4">
+    <article>
         <div class="p-6 pb-0 mb-0 border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
-            <h4>List Kriteria</h4>
+            <h4>Daftar Kriteria</h4>
         </div>
         <div class="flex justify-end w-full mt-4 px-4">
             <a href="{{ route('kriteria.create') }}" onclick="return checkTotalBobot()"
@@ -61,7 +61,7 @@
                             </table>
                             <div class="mt-4">Total Bobot: {{ $totalBobot }}</div>
                             @if ($totalBobot < 100)
-                                <div class="mt-2 text-green-500">Tambahkan data kriteria baru.</div>
+                                <div class="mt-2 text-cyan-500">Pastikan total bobot adalah 100</div>
                             @else
                                 <div class="mt-2 text-red-500">Total bobot sudah mencapai 100. Tidak dapat menambahkan data kriteria baru.</div>
                             @endif
@@ -76,7 +76,7 @@
         function checkTotalBobot() {
             var totalBobot = {{ $totalBobot }};
             if (totalBobot === 100) {
-                alert('Total bobot sudah mencapai 100. Tidak dapat menambahkan data kriteria baru.');
+                alert('Total bobot sudah mencapai 100. Sesuaikan nilai bobot untuk dapat menambahkan data kriteria baru.');
                 return false;
             }
             return true;
