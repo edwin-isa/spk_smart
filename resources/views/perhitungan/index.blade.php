@@ -209,40 +209,42 @@
                                     </thead>
                                     <tbody>
                                        @foreach ($alternatif as $a)
-                                        <tr>
-                                            <td class="px-6 py-3 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-                                                <span class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80">
-                                                    {{ $a->name_alternatif }}
-                                                </span>
-                                            </td>
+                                <tr>
+                                    <td class="px-6 py-3 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                                        <span class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80">
+                                            {{ $a->name_alternatif }}
+                                        </span>
+                                    </td>
+                                    @php
+                                        $totalFinalValue = 0;
+                                    @endphp
+                                    @foreach ($kriteria as $v)
+                                    <td class="px-6 py-3 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                                        <span class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80">
                                             @php
-                                                $totalFinalValue = 0;
+                                                // Calculate nilai akhir by multiplying normalized weight and nilai utilitas
+                                                $nilaiAkhir = number_format($v->bobot / 100 * $nilaiUtilitasArray[$a->id][$v->id], 2);
+                                                echo $nilaiAkhir;
+                                                // Add nilai akhir to the total final value
+                                                $totalFinalValue += $nilaiAkhir;
                                             @endphp
-                                            @foreach ($kriteria as $v)
-                                                <td class="px-6 py-3 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-                                                    <span class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80">
-                                                        {{ number_format($nilaiUtilitasArray[$a->id][$v->id], 2) }}
-                                                    </span>
-                                                </td>
-                                                @php
-                                                    // ... (penambahan nilai ke total nilai akhir)
-                                                    $totalFinalValue += $nilaiUtilitasArray[$a->id][$v->id];
-                                                @endphp
-                                            @endforeach
-                                            <!-- Tampilkan nilai akhir (normalisasi bobot * nilai utilitas) untuk alternatif saat ini -->
-                                            <td class="px-6 py-3 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-                                                <span class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80">
-                                                    {{ number_format($nilaiUtilitasArray[$a->id]['akhir'], 2) }}
-                                                </span>
-                                            </td>
-                                            <!-- Tampilkan ranking berdasarkan total nilai akhir -->
-                                            <td class="px-6 py-3 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-                                                <span class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80">
-                                                    {{ $nilaiUtilitasArray[$a->id]['ranking'] }}
-                                                </span>
-                                            </td>
-                                        </tr>
+                                        </span>
+                                    </td>
                                     @endforeach
+                                    <!-- Tampilkan nilai akhir (normalisasi bobot * nilai utilitas) untuk alternatif saat ini -->
+                                    <td class="px-6 py-3 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                                        <span class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80">
+                                            {{ number_format($nilaiUtilitasArray[$a->id]['akhir'], 2) }}
+                                        </span>
+                                    </td>
+                                    <!-- Tampilkan ranking berdasarkan total nilai akhir -->
+                                    <td class="px-6 py-3 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                                        <span class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80">
+                                            {{ $nilaiUtilitasArray[$a->id]['ranking'] }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @endforeach
 
                                     </tbody>
                                 </table>
