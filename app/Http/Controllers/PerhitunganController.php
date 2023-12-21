@@ -2,210 +2,104 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Penilaian;
 use App\Models\Alternatif;
 use App\Models\Kriteria;
-use App\Models\Penilaian;
-use Illuminate\Http\Request;
-use RealRashid\SweetAlert\Facades\Alert;
-
 
 class PerhitunganController extends Controller
 {
-    //
-    public function assessmentsFilled()
+    public function index()
     {
-        // Check if assessments are filled (adjust this based on your data structure)
-        $assessments = Penilaian::all(); // Replace it with your actual assessment model
-        // if ($assessments->count() < 2) {
-        //     return false;
-        // }
-
-        return $assessments->isNotEmpty();
-    }
-    public function index(){
-
-        if (!$this->assessmentsFilled()) {
-            Alert::error('Failed', 'Isi Matriks Penilaian terlebih dahulu');
-
-            // Redirect back or to a specific page with a message
-            return redirect()->route('penilaian.index')->with('error', 'Please fill out the assessments before viewing the ranking.');
-        }
-
-        $kriteria = Kriteria::all();
+        $penilaian = Penilaian::all();
         $alternatif = Alternatif::all();
-        $penilaian = Penilaian::with(['alternatif', 'kriteria'])->get();
+        $kriteria = Kriteria::all();
+        $nilaiUtilitasArray = [];
+        $penilaianRecordArray = [];
 
-        $desiredDecimalPlaces = 2; // Ganti jumlah desimal
+        // Inisialisasi Cmax dan Cmin
+        $Cmax = [];
+        $Cmin = [];
 
-        // Inisialisasi variabel
+        // Hitung jumlah bobot untuk setiap kriteria
+        $jumlahBobot = [];
+        foreach ($kriteria as $c) {
+            $jumlahBobot[$c->id] = $penilaian->where('id_kriteria', $c->id)->sum('value');
 
-        foreach ($kriteria as $k => $v) {
-            foreach ($penilaian as $p => $val) {
-                if ($v->id == $val->id_kriteria) {
-                    $minMax[$v->id][] = $val->value;
-                }
-            }
-
-            // Check if there are values for the current $kriteriaId
-            if (!empty($minMax[$v->id])) {
-                $values = $minMax[$v->id];
-                $maxXi[$v->id] = max($values);
-                $minXi[$v->id] = min($values);
-
-                // Initialize $tij and $V for the current $kriteriaId
-                $tij[$v->id] = [];
-                $V[$v->id] = [];
-                // Normalisasi
-                foreach ($alternatif as $a) {
-                    $penilaianRecord = $penilaian
-                        ->where('id_kriteria', $v->id)
-                        ->where('id_alternatif', $a->id)
-                        ->first();
-
-                    $bobotKriteria = $penilaianRecord ? $penilaianRecord->value : 0;
-                    $jumlahBobotKriteria = $penilaian->where('id_kriteria', $v->id)->sum('value');
-                    $nilaiNormalisasi = $jumlahBobotKriteria != 0 ? $bobotKriteria / $jumlahBobotKriteria : 0;
-
-                    // Rumus normalisasi
-                    if ($v->attribute == "benefit") {
-                        $normalizedValue = ($maxXi[$v->id] - $minXi[$v->id]) != 0 ? ($nilaiNormalisasi - $minXi[$v->id]) / ($maxXi[$v->id] - $minXi[$v->id]) : 0;
-                    } elseif ($v->attribute == "cost") {
-                        $normalizedValue = ($maxXi[$v->id] - $minXi[$v->id]) != 0 ? ($maxXi[$v->id] - $nilaiNormalisasi) / ($maxXi[$v->id] - $minXi[$v->id]) : 0;
-                    }
-
-                    // Normalisasi
-                    $tij[$v->id][$a->id] = number_format($normalizedValue, $desiredDecimalPlaces);
-                }
-            }
+            // Temukan nilai terbesar (Cmax) dan terkecil (Cmin) di kriteria ini
+            $Cmax[$c->id] = $penilaian->where('id_kriteria', $c->id)->max('value');
+            $Cmin[$c->id] = $penilaian->where('id_kriteria', $c->id)->min('value');
         }
 
-
-        foreach ($kriteria as $v) {
-            foreach ($alternatif as $a) {
-                // Menghitung nilai kriteria maksimal dan minimal
-                $Cmax = $penilaian->where('id_kriteria', $v->id)->max('value');
-                $Cmin = $penilaian->where('id_kriteria', $v->id)->min('value');
-
-                // Mengambil nilai kriteria untuk alternatif saat ini
-                $penilaianRecord = $penilaian
-                    ->where('id_kriteria', $v->id)
-                    ->where('id_alternatif', $a->id)
-                    ->first();
-
-                // Menentukan nilai kriteria alternatif
-                $Cout = $penilaianRecord ? $penilaianRecord->value : 0;
-
-                // Inisialisasi nilai utilitas
-                $nilai_utilitas = 0;
-
-                // Logika penghitungan nilai utilitas
-                if ($v->attribute == 'cost') {
-                    // Rumus untuk atribut cost
-                    $denominator = ($Cmax - $Cmin) != 0 ? ($Cmax - $Cmin) : "undefined";
-                    $nilai_utilitas = $denominator != "undefined" ? ($Cmax - $Cout) / $denominator * 100 : 0;
-                } elseif ($v->attribute == 'benefit') {
-                    // Rumus untuk atribut benefit
-                    $denominator = ($Cmax - $Cmin) != 0 ? ($Cmax - $Cmin) : "undefined";
-                    $nilai_utilitas = $denominator != "undefined" ? ($Cout - $Cmin) / $denominator * 100 : 0;
-                }
-
-
-                // Anda dapat menyimpan nilai utilitas ke dalam array atau struktur data lainnya
-                // atau menggunakan sesuai kebutuhan bisnis Anda.
-
-                // Contoh menyimpan nilai utilitas ke dalam array
-                $nilaiUtilitasArray[$a->id][$v->id] = $nilai_utilitas;
-            }
-        }
-
+        // Hitung normalisasi bobot dan nilai utilitas
         foreach ($alternatif as $a) {
-            $totalFinalValue = 0;
+            $nilai_akhir = 0; // Inisialisasi nilai akhir
+            $totalFinalValue = 0; // Initialize total final value
 
             foreach ($kriteria as $v) {
-                // Menghitung nilai kriteria maksimal dan minimal
-                $Cmax = $penilaian->where('id_kriteria', $v->id)->max('value');
-                $Cmin = $penilaian->where('id_kriteria', $v->id)->min('value');
-
-                // Mengambil nilai kriteria untuk alternatif saat ini
                 $penilaianRecord = $penilaian
                     ->where('id_kriteria', $v->id)
                     ->where('id_alternatif', $a->id)
                     ->first();
 
-                // Menentukan nilai kriteria alternatif
-                $Cout = $penilaianRecord ? $penilaianRecord->value : 0;
+                // Simpan nilai penilaian ke dalam array untuk digunakan selanjutnya
+                $penilaianRecordArray[$a->id][$v->id] = $penilaianRecord ? $penilaianRecord->value : 0;
 
-                // Inisialisasi nilai utilitas
-                $nilai_utilitas = 0;
+                // Hitung normalisasi bobot
+                $bobotKriteria = $v->bobot / 100;
+                $normalisasiBobot = number_format($bobotKriteria, 2);
 
-                // Logika penghitungan nilai utilitas
+                // Hitung nilai utilitas
+                $Cout = $penilaianRecordArray[$a->id][$v->id];
+
+                // Hitung nilai Cmax dan Cmin sesuai dengan kriteria
+                $CmaxKriteria = $Cmax[$v->id];
+                $CminKriteria = $Cmin[$v->id];
+
+                $denominator = ($CmaxKriteria - $CminKriteria) != 0 ? ($CmaxKriteria - $CminKriteria) : 1;
+
                 if ($v->attribute == 'cost') {
-                    // Rumus untuk atribut cost
-                    $denominator = ($Cmax - $Cmin) != 0 ? ($Cmax - $Cmin) : "undefined";
-                    $nilai_utilitas = $denominator != "undefined" ? ($Cmax - $Cout) / $denominator * 100 : 0;
+                    $nilai_utilitas = ($CmaxKriteria - $Cout) / $denominator * 1;
                 } elseif ($v->attribute == 'benefit') {
-                    // Rumus untuk atribut benefit
-                    $denominator = ($Cmax - $Cmin) != 0 ? ($Cmax - $Cmin) : "undefined";
-                    $nilai_utilitas = $denominator != "undefined" ? ($Cout - $Cmin) / $denominator * 100 : 0;
+                    $nilai_utilitas = ($Cout - $CminKriteria) / $denominator * 1;
                 }
 
+                // Simpan nilai utilitas ke dalam array untuk digunakan selanjutnya
+                $nilaiUtilitasArray[$a->id][$v->id] = number_format($nilai_utilitas, 2);
 
-                // Ambil nilai bobot dari penilaian
-                $penilaianRecord = $penilaian
-                    ->where('id_kriteria', $v->id)
-                    ->where('id_alternatif', $a->id)
-                    ->first();
+                // Tambahkan nilai akhir dengan mengalikan normalisasi bobot dan nilai utilitas kriteria
+                $nilai_akhir += $normalisasiBobot * $nilaiUtilitasArray[$a->id][$v->id];
 
-                $bobotKriteria = $penilaianRecord ? $penilaianRecord->value : 0;
-                $jumlahBobotKriteria = $penilaian->where('id_kriteria', $v->id)->sum('value');
-                $nilaiNormalisasi = $jumlahBobotKriteria != 0 ? $bobotKriteria / $jumlahBobotKriteria : 0;
+                // Calculate nilai akhir by multiplying normalized weight and nilai utilitas
+                $nilaiAkhir = number_format($v->bobot / 100 * $nilaiUtilitasArray[$a->id][$v->id], 2);
 
-                // Hitung nilai akhir untuk kriteria saat ini
-                $finalValue = $nilaiNormalisasi * $nilai_utilitas;
-
-                // Tambahkan nilai akhir untuk kriteria saat ini ke total nilai akhir untuk alternatif
-                $totalFinalValue += $finalValue;
+                // Add nilai akhir to the total final value
+                $totalFinalValue += $nilaiAkhir;
             }
 
-            // Tambahkan total nilai akhir untuk alternatif saat ini ke dalam array
-            $totalFinalValues[$a->id] = $totalFinalValue;
+            // Simpan nilai akhir ke dalam array untuk digunakan selanjutnya
+            $nilaiUtilitasArray[$a->id]['akhir'] = number_format($nilai_akhir, 2);
+
+            // Update total final value for the current alternative
+            $nilaiUtilitasArray[$a->id]['total_final_value'] = number_format($totalFinalValue, 2);
         }
 
+        // Proses perhitungan ranking berdasarkan total_final_value
+        $sortedAlternatif = collect($nilaiUtilitasArray)->sortByDesc('total_final_value')->toArray();
 
+        $ranking = 1;
+        $prevScore = null;
 
-        // Perankingan
-        foreach($alternatif as $alt){
-            $total = 0;
-            foreach($kriteria as $kri){
-                $key = $alt->id - 1;
-                // Check if the key exists in the $Q array
-                if (isset($Q[$kri->id][$key])) {
-                    $total += $Q[$kri->id][$key];
-                } else {
-                    // Provide a default value if the key is not set
-                    // You can adjust this default value based on your logic
-                    $total += 0;
-                }
+        foreach ($sortedAlternatif as $alternatifId => $scoreData) {
+            $currentScore = $scoreData['total_final_value'];
+
+            if ($prevScore !== null && $currentScore != $prevScore) {
+                $ranking++;
             }
 
-            $rank[$alt->id] = number_format($total, $desiredDecimalPlaces);
+            $nilaiUtilitasArray[$alternatifId]['ranking'] = $ranking;
+            $prevScore = $currentScore;
         }
-        arsort($rank);
 
-        // dd($V, $G,$Q, $rank);
-
-        // Kirim data ke view
-        return view('perhitungan.index', [
-            'normalisasi' => $tij,
-            'kriteria' => $kriteria,
-            'alternatif' => $alternatif,
-            'penilaian' => $penilaian,
-            'pembobotan' => $V,
-            'ranking' => $rank,
-            'nilaiUtilitasArray' => $nilaiUtilitasArray,
-        ]);
+        return view('perhitungan.index', compact('penilaian', 'alternatif', 'kriteria', 'nilaiUtilitasArray', 'jumlahBobot', 'Cmax', 'Cmin'));
     }
-
-
-
 }

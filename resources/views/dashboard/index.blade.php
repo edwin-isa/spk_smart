@@ -14,7 +14,7 @@
 </style>
 
 @section('content')
-    <article class="article mt-4">
+    <article>
         <div class="p-6 pb-0 mb-0 border-b-0 border-b-solid rounded-t-2xl border-b-transparent flex flex-wrap items-center justify-center">
             
             <div class="w-full mb-6" style="font-size: 30px; font-family: Georgia;">
@@ -51,7 +51,7 @@
                         <div class="flex flex-row -mx-3">
                             <div class="flex-none w-2/3 max-w-full px-3">
                                 <div>
-                                    <p class="mb-0 font-sans text-sm font-semibold leading-normal uppercase dark:text-black dark:opacity-60" style="margin-top: 2px;">KRITERIA</p>
+                                    <p class="mb-0 font-sans text-sm font-semibold leading-normal uppercase dark:text-black dark:opacity-60" style="margin-top: 2px;">Kriteria</p>
                                     <h1 class="font-bold dark:text-black text-3xl" style="margin-top: 2px; margin-bottom: 2px;">{{ \App\Models\Kriteria::count() }}</h1>
                                     <p style="margin-bottom: 2px;">Jenis</p>
                                 </div>
@@ -74,7 +74,7 @@
                             <div class="flex-none w-2/3 max-w-full px-3">
                                 <div>
                                     <p class="mb-0 font-sans text-sm font-semibold leading-normal uppercase dark:text-black dark:opacity-60" style="margin-top: 2px;">Rekomendasi</p>
-                                    <h1 class="font-bold dark:text-black text-3xl" style="margin-top: 2px; margin-bottom: 2px;">3</h1> <!-- sesuaikan dengan model rekomendasi -->
+                                    <h1 class="font-bold dark:text-black text-3xl" style="margin-top: 2px; margin-bottom: 2px;">{{ ($jumlahRekomendasi) }}</h1>
                                     <p style="margin-bottom: 2px;">Siswa</p>
                                 </div>
                             </div>

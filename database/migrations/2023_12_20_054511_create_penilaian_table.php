@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_alternatif');
             $table->foreignId('id_kriteria');
-            $table->decimal('value', 8, 2);
+            $table->decimal('value', 10, 2);
             $table->timestamps();
         });
 
