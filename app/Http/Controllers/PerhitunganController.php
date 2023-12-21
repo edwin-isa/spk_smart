@@ -33,6 +33,7 @@ class PerhitunganController extends Controller
         // Hitung normalisasi bobot dan nilai utilitas
         foreach ($alternatif as $a) {
             $nilai_akhir = 0; // Inisialisasi nilai akhir
+            $totalFinalValue = 0; // Initialize total final value
 
             foreach ($kriteria as $v) {
                 $penilaianRecord = $penilaian
@@ -67,14 +68,18 @@ class PerhitunganController extends Controller
 
                 // Tambahkan nilai akhir dengan mengalikan normalisasi bobot dan nilai utilitas kriteria
                 $nilai_akhir += $normalisasiBobot * $nilaiUtilitasArray[$a->id][$v->id];
+
+                // Calculate nilai akhir by multiplying normalized weight and nilai utilitas
+                $nilaiAkhir = number_format($v->bobot / 100 * $nilaiUtilitasArray[$a->id][$v->id], 2);
+
+                // Add nilai akhir to the total final value
+                $totalFinalValue += $nilaiAkhir;
             }
 
             // Simpan nilai akhir ke dalam array untuk digunakan selanjutnya
             $nilaiUtilitasArray[$a->id]['akhir'] = number_format($nilai_akhir, 2);
-        }
-       // Calculate total final values for each alternative
-        foreach ($alternatif as $a) {
-            $totalFinalValue = array_sum($nilaiUtilitasArray[$a->id]);
+
+            // Update total final value for the current alternative
             $nilaiUtilitasArray[$a->id]['total_final_value'] = number_format($totalFinalValue, 2);
         }
 
@@ -94,7 +99,6 @@ class PerhitunganController extends Controller
             $nilaiUtilitasArray[$alternatifId]['ranking'] = $ranking;
             $prevScore = $currentScore;
         }
-
 
         return view('perhitungan.index', compact('penilaian', 'alternatif', 'kriteria', 'nilaiUtilitasArray', 'jumlahBobot', 'Cmax', 'Cmin'));
     }
